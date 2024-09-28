@@ -36,10 +36,17 @@ class ProductsController extends Controller
         return $stockProducts->getWithLowStock();
     }
 
-    public function getByCategory(){
+    public function getByCategories(){
 
+        $categoriesProduct = new Products();
+
+        return $categoriesProduct->getByCategories();
+    }
+
+    public function getBycategory()
+    {
         $categoryProduct = new Products();
 
-        return $categoryProduct->getByCategory();
+        return $categoryProduct->getBycategory();
     }
 }

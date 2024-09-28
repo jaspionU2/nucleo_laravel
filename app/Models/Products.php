@@ -22,14 +22,14 @@ class Products extends Model
                 "id" => 1,
                 "nome" => "ryzen 5 5500",
                 "preco" => 700.00,
-                "categorias" => "eletrônicos, hardware",
+                "categorias" => ["eletrônicos", "hardware"],
                 "estoque" => 21
             ],
             [
                 "id" => 2,
                 "nome" => "rtx 2060",
                 "preco" => 2500.99,
-                "categorias" => "eletrônicos, hardware",
+                "categorias" => ["eletrônicos", "hardware"],
                 "estoque" => 16
             ],
             [
@@ -53,7 +53,16 @@ class Products extends Model
                 "categorias" => "decoração",
                 "estoque" => 30
             ],
+            [
+                "id" => 6,
+                "nome" => "samsumg s23",
+                "preco" => 3500.99,
+                "categorias" => "celular",
+                "estoque" => 30
+            ]
         ];
+
+        $this->productsStockFilter = request()->get("filtroEstoque");
     }
 
     public function getAll()
@@ -83,13 +92,17 @@ class Products extends Model
         return collect($this->products)->where('estoque', '<', 20);
     }
 
-    public function getByCategory()
+    public function getByCategories()
     {
+        return collect($this->products)->pluck('categorias')->flatten()->unique()->values()->toArray();
+    }
 
-        $listFiltredProductsStock = collect($this->products)->filter(function ($products) {
-            
-        });
+    public function getBycategory(){
 
-        
+        if($this->productsStockFilter == NULL){
+            $groupCategory = collect($this->products)->groupBy("categorias", preserveKeys: false);
+        }
+
+        return $groupCategory;
     }
 }
