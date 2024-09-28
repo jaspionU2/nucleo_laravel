@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Products;
 use Illuminate\Http\Request;
 
+use function PHPUnit\Framework\returnSelf;
+
 class ProductsController extends Controller
 {
     public function getAll()
@@ -47,6 +49,12 @@ class ProductsController extends Controller
     {
         $categoryProduct = new Products();
 
-        return $categoryProduct->getBycategory();
+        $filteredProducts = $categoryProduct->getBycategory();
+
+        if(!$filteredProducts || $filteredProducts->isEmpty()){
+            return response()->json(['error' => 'Nenhum produto encontrado para essa categoria'], 404);
+        }
+
+        return $filteredProducts;
     }
 }

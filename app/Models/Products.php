@@ -41,7 +41,7 @@ class Products extends Model
             ],
             [
                 "id" => 4,
-                "nome" => "m-yooo mini",
+                "nome" => "e-yooo mini",
                 "preco" => 253.00,
                 "categorias" => "perifericos",
                 "estoque" => 7
@@ -58,7 +58,7 @@ class Products extends Model
                 "nome" => "samsumg s23",
                 "preco" => 3500.99,
                 "categorias" => "celular",
-                "estoque" => 30
+                "estoque" => 30,
             ]
         ];
 
@@ -97,12 +97,38 @@ class Products extends Model
         return collect($this->products)->pluck('categorias')->flatten()->unique()->values()->toArray();
     }
 
-    public function getBycategory(){
+    public function getBycategory()
+    {
 
-        if($this->productsStockFilter == NULL){
+       
+        if ($this->productsStockFilter == NULL) 
+        {
             $groupCategory = collect($this->products)->groupBy("categorias", preserveKeys: false);
+
+            return $groupCategory;
         }
 
-        return $groupCategory;
+
+        $filtredCategoryGroup = collect($this->products)->filter(function ($product) {
+            
+            if (isset($product['categorias'])) {
+            
+                if (is_array($product['categorias'])) {
+                    return in_array($this->productsStockFilter, $product['categorias']);
+                }
+
+                return $product['categorias'] === $this->productsStockFilter;
+            }
+
+          
+            return false;
+        });
+
+        if ($filtredCategoryGroup->isEmpty()) {
+            return false;
+        }
+
+        return $filtredCategoryGroup;
+
     }
 }
